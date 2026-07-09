@@ -5,14 +5,37 @@ import CreateTaskModal from '../../components/admin/CreateTaskModal';
 import EditTaskModal from '../../components/admin/EditTaskModal';
 import { fetchAllTasks } from '../../api/tasks';
 
-/* Search icon */
+const IconSearch = () => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <circle cx="11" cy="11" r="8" />
+    <path d="m21 21-4.35-4.35" />
+  </svg>
+);
 
+const IconPlus = () => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <path d="M12 5v14M5 12h14" />
+  </svg>
+);
 
 const AdminDashboard = () => {
   const [tasks, setTasks] = useState([]);
   const [showCreate, setShowCreate] = useState(false);
   const [editTask, setEditTask] = useState(null);
-
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
 
@@ -25,7 +48,6 @@ const AdminDashboard = () => {
     }
   };
 
-   
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadTasks();
@@ -33,18 +55,9 @@ const AdminDashboard = () => {
 
   const stats = {
     total: tasks.length,
-
-    open: tasks.filter(
-      (t) => t.status === 'Open'
-    ).length,
-
-    submitted: tasks.filter(
-      (t) => t.status === 'Submitted'
-    ).length,
-
-    completed: tasks.filter(
-      (t) => t.status === 'Completed'
-    ).length,
+    open: tasks.filter((t) => t.status === 'Open').length,
+    submitted: tasks.filter((t) => t.status === 'Submitted').length,
+    completed: tasks.filter((t) => t.status === 'Completed').length,
   };
 
   const statCards = [
@@ -74,7 +87,6 @@ const AdminDashboard = () => {
     },
   ];
 
-  /* Search and status filtering */
   const filteredTasks = tasks.filter((task) => {
     const searchText = search.trim().toLowerCase();
 
@@ -97,10 +109,9 @@ const AdminDashboard = () => {
       <Sidebar />
 
       <main
-  className="ml-0 md:ml-[240px] flex-1 px-4 md:px-8 py-5 md:py-8 min-w-0"
-  style={{ maxWidth: '100vw' }}
->
-        {/* Page header */}
+        className="ml-0 md:ml-[240px] flex-1 px-4 md:px-8 py-5 md:py-8 min-w-0"
+        style={{ maxWidth: '100vw' }}
+      >
         <div className="flex items-center justify-between mb-7 page-section">
           <div>
             <h1
@@ -130,7 +141,6 @@ const AdminDashboard = () => {
           </button>
         </div>
 
-        {/* Stats grid */}
         <div className="grid grid-cols-4 gap-4 mb-6 page-section">
           {statCards.map(
             ({ label, value, colorClass, valueColor }) => (
@@ -162,12 +172,8 @@ const AdminDashboard = () => {
           )}
         </div>
 
-        {/* Tasks table */}
         <div className="tasks-container page-section">
-
-          {/* Table toolbar */}
           <div className="table-header-bar">
-
             <div className="flex items-center gap-2">
               <h2
                 className="text-[15px] font-semibold"
@@ -189,15 +195,11 @@ const AdminDashboard = () => {
                 }}
               >
                 {filteredTasks.length}{' '}
-                {filteredTasks.length === 1
-                  ? 'task'
-                  : 'tasks'}
+                {filteredTasks.length === 1 ? 'task' : 'tasks'}
               </span>
             </div>
 
             <div className="flex items-center gap-2.5 flex-wrap">
-
-              {/* Search input */}
               <div className="relative">
                 <span
                   className="absolute left-2.5 top-1/2 -translate-y-1/2"
@@ -210,45 +212,26 @@ const AdminDashboard = () => {
                   type="text"
                   placeholder="Search tasks..."
                   value={search}
-                  onChange={(e) =>
-                    setSearch(e.target.value)
-                  }
+                  onChange={(e) => setSearch(e.target.value)}
                   className="search-input-glass"
                   style={{ minWidth: '180px' }}
                 />
               </div>
 
-              {/* Status filter */}
               <select
                 value={statusFilter}
-                onChange={(e) =>
-                  setStatusFilter(e.target.value)
-                }
+                onChange={(e) => setStatusFilter(e.target.value)}
                 className="search-input-glass custom-select"
                 style={{
                   paddingLeft: '12px',
                   cursor: 'pointer',
                 }}
               >
-                <option value="All">
-                  All Status
-                </option>
-
-                <option value="Open">
-                  Open
-                </option>
-
-                <option value="Claimed">
-                  Claimed
-                </option>
-
-                <option value="Submitted">
-                  Submitted
-                </option>
-
-                <option value="Completed">
-                  Completed
-                </option>
+                <option value="All">All Status</option>
+                <option value="Open">Open</option>
+                <option value="Claimed">Claimed</option>
+                <option value="Submitted">Submitted</option>
+                <option value="Completed">Completed</option>
               </select>
             </div>
           </div>
@@ -261,7 +244,6 @@ const AdminDashboard = () => {
         </div>
       </main>
 
-      {/* Create task modal */}
       {showCreate && (
         <CreateTaskModal
           onClose={() => setShowCreate(false)}
@@ -269,7 +251,6 @@ const AdminDashboard = () => {
         />
       )}
 
-      {/* Edit task modal */}
       {editTask && (
         <EditTaskModal
           task={editTask}
