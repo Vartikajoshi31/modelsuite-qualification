@@ -15,19 +15,37 @@ const RegisterPage = () => {
   const [email, setEmail]     = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole]       = useState('Talent');
+  const [loading, setLoading] = useState(false);
   const { login }  = useAuth();
   const navigate   = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const { data } = await API.post('/auth/register', { name, email, password, role });
-      login(data);
-      data.role === 'Admin' ? navigate('/admin/dashboard') : navigate('/talent/dashboard');
-    } catch (err) {
-      alert(err.response?.data?.message || 'Registration failed');
-    }
-  };
+  e.preventDefault();
+
+  if (loading) return;
+
+  setLoading(true);
+
+  try {
+    const { data } = await API.post('/auth/register', {
+      name,
+      email,
+      password,
+      role,
+    });
+
+    login(data);
+
+    data.role === 'Admin'
+      ? navigate('/admin/dashboard')
+      : navigate('/talent/dashboard');
+
+  } catch (err) {
+    alert(err.response?.data?.message || 'Registration failed');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="grid min-h-screen grid-cols-1 lg:grid-cols-[480px_1fr]">
@@ -61,18 +79,30 @@ const RegisterPage = () => {
           </div>
 
           <div className="flex flex-col gap-2 group">
-            <label className={labelCls} htmlFor="role">Role</label>
-            <select id="role" value={role} onChange={(e) => setRole(e.target.value)}
-              className={`${inputCls} custom-select cursor-pointer`}>
-              <option value="Talent">Talent</option>
-              <option value="Admin">Admin</option>
-            </select>
-          </div>
+  <label className={labelCls} htmlFor="role">Role</label>
 
-          <button type="submit"
-            className="mt-2 w-full py-3.5 rounded-[10px] text-[15px] font-semibold text-white cursor-pointer btn-gradient border-none hover:scale-[1.02] active:scale-[0.98] transition-transform duration-200">
-            Setup Profile
-          </button>
+  <select
+    id="role"
+    value={role}
+    onChange={(e) => setRole(e.target.value)}
+    className={`${inputCls} custom-select cursor-pointer`}
+  >
+    <option value="Talent">Talent</option>
+    <option value="Admin">Admin</option>
+  </select>
+</div>
+
+          <button
+  type="submit"
+  disabled={loading}
+  className="mt-2 w-full py-3.5 rounded-[10px] text-[15px] font-semibold text-white cursor-pointer btn-gradient border-none hover:scale-[1.02] active:scale-[0.98] transition-transform duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
+>
+  {loading && (
+    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+  )}
+
+  {loading ? 'Creating account...' : 'Setup Profile'}
+</button>
         </form>
 
         <p className="mt-7 text-sm text-text-muted text-center relative z-10 animate-fade-slide" style={{ animationDelay: '0.25s', animationFillMode: 'both' }}>
